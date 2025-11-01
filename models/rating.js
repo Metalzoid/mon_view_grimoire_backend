@@ -5,4 +5,4 @@ const ratingSchema = mongoose.Schema({
   grade: { type: Number, required: true },
 });
 
-module.exports = mongoose.model("Rating", ratingSchema);
+module.exports = ratingSchema;
