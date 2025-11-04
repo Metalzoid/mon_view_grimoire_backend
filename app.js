@@ -1,9 +1,21 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const path = require("path");
 const userRoutes = require("./routes/user");
 const bookRoutes = require("./routes/book");
 
 const app = express();
+
+mongoose
+.connect(process.env.MONGODB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+.then(() => console.log("Connexion à MongoDB réussie !"))
+.catch(() => console.log("Connexion à MongoDB échouée !"));
+
+// Servir statiquement le dossier images
+app.use('/images', express.static(path.join(__dirname, 'images')));
 
 // Middleware pour autoriser le CORS
 app.use((req, res, next) => {
@@ -12,19 +24,10 @@ app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
   next();
 });
-// Middleware pour parser le JSON dans les requêtes
-app.use((req, res, next) => {
-  express.json()
-  next()
-});
 
-mongoose
-  .connect(process.env.MONGODB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => console.log("Connexion à MongoDB réussie !"))
-  .catch(() => console.log("Connexion à MongoDB échouée !"));
+
+// Parser le JSON directement pour toutes les requêtes
+app.use(express.json());
 
 // Routes
 // Authentification
