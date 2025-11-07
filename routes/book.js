@@ -11,6 +11,7 @@ router.get("/:id", bookController.getOneBook);
 
 // POSTS
 router.post("/", multer, bookController.addOneBook);
+router.post("/:id/rating", bookController.addOneRating)
 
 // PUTS
 router.put("/:id", multer, bookController.updateOneBook)
