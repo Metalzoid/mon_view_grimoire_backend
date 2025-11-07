@@ -16,7 +16,6 @@ exports.getAllBooks = async (req, res, next) => {
 exports.getOneBook = async (req, res, next) => {
   try {
     const book = await Book.findOne({ _id: req.params.id })
-    console.log(book);
 
     if (!book) {
       return res.status(401).json({ message: "Book not found"});
@@ -37,7 +36,7 @@ exports.getBestRating = async (req, res, next) => {
   }
 }
 
-exports.addBook = async (req, res, next) => {
+exports.addOneBook = async (req, res, next) => {
   try {
     // Parse l'objet book reçu en JSON, car multer retourne uniquement du JSON
     const bookObject = JSON.parse(req.body.book);
@@ -54,7 +53,7 @@ exports.addBook = async (req, res, next) => {
       averageRating: averageRating,
       ratings: bookObject.ratings,
       userId: bookObject.userId,
-      imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
+      imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
     });
 
     await book.save();
@@ -64,6 +63,41 @@ exports.addBook = async (req, res, next) => {
   }
 };
 
+exports.updateOneBook =  async (req, res, next) => {
+  try {
+    const book = await Book.findOne({ _id: req.params.id })
+
+    if (!book) {
+      return res.status(404).json({ message: 'Book not found.'})
+    }
+    const params = {}
+
+    if (req.file) {
+      const bookObject = JSON.parse(req.body.book);
+      Object.assign(params, {
+        title: bookObject.title,
+        author: bookObject.author,
+        year: bookObject.year,
+        genre: bookObject.genre,
+        imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+      })
+    } else {
+      const bookObject = req.body;
+      Object.assign(params, {
+        title: bookObject.title,
+        author: bookObject.author,
+        year: bookObject.year,
+        genre: bookObject.genre,
+      })
+    }
+    book.set(params)
+    await book.save()
+    return res.status(200).json({ message: "Book successfully updated."})
+  } catch (err) {
+    console.log(err.message);
+    return res.status(500).json({ message: err.message })
+  }
+};
 
 exports.deleteBook = async (req, res, next) => {
   try {
