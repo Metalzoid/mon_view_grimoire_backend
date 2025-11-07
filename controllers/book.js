@@ -1,5 +1,4 @@
 const Book = require("../models/book");
-const Rating = require("../models/rating");
 const path = require("path");
 const fs = require("fs");
 
@@ -62,6 +61,35 @@ exports.addOneBook = async (req, res, next) => {
     return res.status(500).json({ message: err.message });
   }
 };
+
+exports.addOneRating = async (req, res, next) => {
+  try {
+    const book = await Book.findOne({ _id: req.params.id });
+    if (!book) {
+      return res.status(404).json({ message: "Book not found!"})
+    }
+
+    const existingRatings = book.ratings;
+    const newRating = {
+      userId: req.body.userId,
+      grade: req.body.rating
+    }
+
+    if (existingRatings.some(r => r.userId === newRating.userId)) {
+      return res.status(403).json({ message: "UserId already rating this book !" })
+    }
+
+    book.ratings.push(newRating)
+    book.averageRating = book.ratings.length > 0
+                          ? book.ratings.reduce((sum, r) => sum + r.grade, 0) / book.ratings.length
+                          : 0;
+    await book.save()
+
+    return res.status(200).json(book)
+  } catch (err) {
+    res.status(500).json({ message: err.message })
+  }
+}
 
 exports.updateOneBook =  async (req, res, next) => {
   try {
