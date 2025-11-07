@@ -21,6 +21,15 @@ exports.getOneBook = async (req, res, next) => {
   }
 }
 
+exports.getBestRating = async (req, res, next) => {
+  try {
+    const books = await Book.find().sort('-averageRating').limit(3)
+    return res.status(200).json(books)
+  } catch (err) {
+    return res.status(500).json({ message: err.message })
+  }
+}
+
 exports.addBook = async (req, res, next) => {
   try {
     // Parse l'objet book reçu en JSON
