@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const multer = require('../middleware/multer-config');
+const auth = require('../middleware/auth')
 
 const bookController = require("../controllers/book");
 
@@ -10,13 +11,13 @@ router.get("/bestrating", bookController.getBestRating);
 router.get("/:id", bookController.getOneBook);
 
 // POSTS
-router.post("/", multer, bookController.addOneBook);
-router.post("/:id/rating", bookController.addOneRating)
+router.post("/", auth, multer, bookController.addOneBook);
+router.post("/:id/rating", auth, bookController.addOneRating)
 
 // PUTS
-router.put("/:id", multer, bookController.updateOneBook)
+router.put("/:id", auth, multer, bookController.updateOneBook)
 
 // DELETE
-router.delete("/:id", bookController.deleteBook);
+router.delete("/:id", auth, bookController.deleteBook);
 
 module.exports = router;
