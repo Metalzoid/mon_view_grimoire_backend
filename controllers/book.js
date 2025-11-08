@@ -39,17 +39,12 @@ exports.addOneBook = async (req, res, next) => {
   try {
     // Parse l'objet book reçu en JSON, car multer retourne uniquement du JSON
     const bookObject = JSON.parse(req.body.book);
-    const ratings = bookObject.ratings;
-    const averageRating = ratings.length > 0
-        ? ratings.reduce((sum, r) => sum + r.grade, 0) / ratings.length
-        : 0;
 
     const book = new Book({
       title: bookObject.title,
       author: bookObject.author,
       year: bookObject.year,
       genre: bookObject.genre,
-      averageRating: averageRating,
       ratings: bookObject.ratings,
       userId: bookObject.userId,
       imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
@@ -58,6 +53,8 @@ exports.addOneBook = async (req, res, next) => {
     await book.save();
     return res.status(201).json({ message: `${bookObject.title} successfully saved!` });
   } catch (err) {
+    console.log(err.message);
+
     return res.status(500).json({ message: err.message });
   }
 };
@@ -80,9 +77,6 @@ exports.addOneRating = async (req, res, next) => {
     }
 
     book.ratings.push(newRating)
-    book.averageRating = book.ratings.length > 0
-                          ? book.ratings.reduce((sum, r) => sum + r.grade, 0) / book.ratings.length
-                          : 0;
     await book.save()
 
     return res.status(200).json(book)

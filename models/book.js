@@ -12,4 +12,11 @@ const bookSchema = mongoose.Schema({
   userId: { type: String }
 });
 
+bookSchema.pre('validate', function() {
+  const average = this.ratings.length > 0
+                  ? this.ratings.reduce((sum, r) => sum + r.grade, 0) / this.ratings.length
+                  : 0;
+  this.set({ averageRating: average })
+})
+
 module.exports = mongoose.model("Book", bookSchema);
