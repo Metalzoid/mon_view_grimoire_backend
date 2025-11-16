@@ -8,6 +8,7 @@ exports.getAllBooks = async (req, res, next) => {
 
     return res.status(200).json(books);
   } catch (err) {
+    console.error("Error getting all books:", err);
     return res.status(500).json({ message: err.message });
   }
 };
@@ -22,6 +23,7 @@ exports.getOneBook = async (req, res, next) => {
 
     return res.status(200).json(book);
   } catch (err) {
+    console.error("Error getting one book:", err);
     return res.status(500).json({ message: err.message });
   }
 };
@@ -31,6 +33,7 @@ exports.getBestRating = async (req, res, next) => {
     const books = await Book.find().sort("-averageRating").limit(3);
     return res.status(200).json(books);
   } catch (err) {
+    console.error("Error getting best rated books:", err);
     return res.status(500).json({ message: err.message });
   }
 };
@@ -61,8 +64,7 @@ exports.addOneBook = async (req, res, next) => {
     if (req.file) {
       deleteImageSync(req.file.filename);
     }
-    console.log(err.message);
-
+    console.error("Error adding one book:", err);
     return res.status(500).json({ message: err.message });
   }
 };
@@ -91,6 +93,7 @@ exports.addOneRating = async (req, res, next) => {
 
     return res.status(200).json(book);
   } catch (err) {
+    console.error("Error adding one rating:", err);
     return res.status(500).json({ message: err.message });
   }
 };
@@ -149,7 +152,7 @@ exports.updateOneBook = async (req, res, next) => {
     if (req.file) {
       deleteImageSync(req.file.filename);
     }
-    console.log(err.message);
+    console.error("Error updating one book:", err);
     return res.status(500).json({ message: err.message });
   }
 };
@@ -173,8 +176,7 @@ exports.deleteBook = async (req, res, next) => {
 
     return res.status(200).json({ message: "Book successfully deleted." });
   } catch (err) {
-    console.log(err.message);
-
+    console.error("Error deleting book:", err);
     return res.status(500).json({ message: err.message });
   }
 };
