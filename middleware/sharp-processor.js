@@ -40,13 +40,13 @@ module.exports = async (req, res, next) => {
           fs.unlinkSync(originalPath);
         }
       } catch (cleanupError) {
-        console.error("Erreur lors du nettoyage des fichiers:", cleanupError);
+        console.error("Error cleaning up files:", cleanupError);
       }
     }
 
-    console.error("Erreur lors du traitement de l'image avec Sharp:", error);
+    console.error("Error processing image with Sharp:", error);
     return res.status(500).json({
-      message: "Erreur lors du traitement de l'image",
+      message: "Error processing image",
     });
   }
 };

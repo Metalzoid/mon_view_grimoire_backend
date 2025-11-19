@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 
 require("dotenv").config();
 
-const authMiddleware = require("../../middleware/auth");
+const authMiddleware = require("../../../middleware/auth");
 
 describe("authMiddleware", () => {
   before(() => {
