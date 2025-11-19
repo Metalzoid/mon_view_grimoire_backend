@@ -13,7 +13,7 @@ module.exports = (req, res, next) => {
     };
     next();
   } catch (error) {
-    console.error("Erreur lors de la vérification du token:", error);
+    console.error("Error verifying token:", error);
     res.status(401).json({ message: "Invalid token" });
   }
 };
