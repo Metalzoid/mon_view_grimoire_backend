@@ -11,7 +11,7 @@ describe("Book Model", () => {
   before(async () => {
     if (mongoose.connection.readyState === 0) {
       await mongoose.connect(
-        process.env.MONGODB_URI || "mongodb://localhost:27017/test"
+        process.env.MONGODB_TESTS_URI || "mongodb://localhost:27017"
       );
     }
   });
